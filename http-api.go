@@ -28,9 +28,8 @@ func main() {
 
 func addItems(w http.ResponseWriter, r *http.Request) { //r accepts an http request while w is responsible for writing a response
 
-	//reads request and add it to the Post instance
 	var newPost Post
-	json.NewDecoder(r.Body).Decode(&newPost) //decodes the json data from the request body into the newPost variable
+	json.NewDecoder(r.Body).Decode(&newPost) //decodes the json data from the request body into the newPost variable(which is an instance of Post)
 
 	posts = append(posts, newPost) //appends the newPost to the posts slice us
 
