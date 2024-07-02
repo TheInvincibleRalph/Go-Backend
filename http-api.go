@@ -32,6 +32,7 @@ func main() {
 	router.HandleFunc("/posts", getAllPosts).Methods("GET")
 	router.HandleFunc("/posts/{id}", getApost).Methods("GET")
 	router.HandleFunc("/posts/{id}", updateApost).Methods("PUT")
+	router.HandleFunc("/posts/{id}", patchPost).Methods("PATCH")
 
 	http.ListenAndServe(":3000", router)
 
@@ -100,4 +101,30 @@ func updateApost(w http.ResponseWriter, r *http.Request) {
 
 	posts[id] = updatedPost
 	json.NewEncoder(w).Encode(updatedPost)
+}
+
+func patchPost(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
+	//get the Id of the post from the root parameters
+	var idParam string = mux.Vars(r)["id"]
+	id, err := strconv.Atoi(idParam)
+	if err != nil {
+		w.WriteHeader(400)
+		w.Write([]byte("ID could not be converted to integer"))
+		return
+	}
+
+	//error checking
+	if id >= len(posts) {
+		w.WriteHeader(404)
+		w.Write([]byte("No post found with specified I"))
+		return
+	}
+
+	//get the current value
+	post := posts[id]
+	json.NewDecoder(r.Body).Decode(&post)
+
+	json.NewEncoder(w).Encode(post)
 }
