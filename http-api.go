@@ -33,6 +33,7 @@ func main() {
 	router.HandleFunc("/posts/{id}", getApost).Methods("GET")
 	router.HandleFunc("/posts/{id}", updateApost).Methods("PUT")
 	router.HandleFunc("/posts/{id}", patchPost).Methods("PATCH")
+	router.HandleFunc("/posts/{id}", deletePost).Methods("DELETE")
 
 	http.ListenAndServe(":3000", router)
 
@@ -54,6 +55,7 @@ func getApost(w http.ResponseWriter, r *http.Request) {
 	if id >= len(posts) {
 		w.WriteHeader(404)
 		w.Write([]byte("No post found with specified ID"))
+		return
 	}
 
 	post := posts[id]
@@ -128,4 +130,30 @@ func patchPost(w http.ResponseWriter, r *http.Request) {
 
 	posts[id] = post //a pointer can be used above to replace this (such that post := &posts[id] can be used instead of using post := posts[id])
 	json.NewEncoder(w).Encode(post)
+}
+
+func deletePost(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
+	//get the Id of the post from the root parameters
+	var idParam string = mux.Vars(r)["id"]
+	id, err := strconv.Atoi(idParam)
+	if err != nil {
+		w.WriteHeader(400)
+		w.Write([]byte("ID could not be converted to integer"))
+		return
+	}
+
+	//error checking
+	if id >= len(posts) {
+		w.WriteHeader(404)
+		w.Write([]byte("No post found with specified ID"))
+		return
+	}
+
+	//delete the post from the slice
+	//https://go.dev/wiki/SliceTricks
+	posts = append(posts[:id], posts[id+1:]...)
+	w.WriteHeader(200)
+
 }
