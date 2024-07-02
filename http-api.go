@@ -118,7 +118,7 @@ func patchPost(w http.ResponseWriter, r *http.Request) {
 	//error checking
 	if id >= len(posts) {
 		w.WriteHeader(404)
-		w.Write([]byte("No post found with specified I"))
+		w.Write([]byte("No post found with specified ID"))
 		return
 	}
 
@@ -126,5 +126,6 @@ func patchPost(w http.ResponseWriter, r *http.Request) {
 	post := posts[id]
 	json.NewDecoder(r.Body).Decode(&post)
 
+	posts[id] = post //a pointer can be used above to replace this (such that post := &posts[id] can be used instead of using post := posts[id])
 	json.NewEncoder(w).Encode(post)
 }
