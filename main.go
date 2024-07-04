@@ -83,7 +83,7 @@ func updateApost(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "aplication/json")
 
 	//get the Id of the post from the root parameters
-	var idParam string = mux.Vars(r)["id"]
+	var idParam string = mux.Vars(r)["id"] //mux.Vars takes in the incoming request and returns the route variables, if any. However, a specific variable can be wrapped in a square bracket for retrieval.
 	id, err := strconv.Atoi(idParam)
 	if err != nil {
 		w.WriteHeader(400)
