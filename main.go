@@ -113,7 +113,7 @@ func patchPost(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(idParam)
 	if err != nil {
 		w.WriteHeader(400)
-		w.Write([]byte("ID could not be converted to integer"))
+		w.Write([]byte("ID could not be converted to integer")) //Write is used to convert a response into a slice of bytes---the client is responsible for converting the slice of bytes into strings of text.
 		return
 	}
 
